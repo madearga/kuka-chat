@@ -18,16 +18,18 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-       <html lang="en">
+      <html lang="en">
         <body className={`${inter.className} flex flex-col min-h-screen`}>
           <header className="flex justify-between p-4">
             <h1>kukachat</h1>
             <UserButton afterSignOutUrl="/" />
           </header>
-          <main className="flex-grow flex items-center justify-center">
+          <main className="flex-grow">
             <SignedOut>
-              <div className="w-full max-w-md">
-              <SignIn routing="hash" />
+              <div className="w-full h-full flex items-center justify-center">
+                <div className="w-full max-w-md">
+                  <SignIn routing="hash" />
+                </div>
               </div>
             </SignedOut>
             <SignedIn>

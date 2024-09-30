@@ -371,9 +371,9 @@ export function ChatInterfaceComponent() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen w-full bg-gray-100 overflow-hidden">
       {/* Sidebar */}
-      <div className={`bg-white border-r transition-all duration-300 ${state.isSidebarOpen ? 'w-64' : 'w-0'}`}>
+      <div className={`bg-white border-r transition-all duration-300 ${state.isSidebarOpen ? 'w-64' : 'w-0'} h-full`}>
         {state.isSidebarOpen && (
           <>
             <div className="p-4 flex items-center justify-between">
