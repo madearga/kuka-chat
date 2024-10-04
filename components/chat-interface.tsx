@@ -9,15 +9,9 @@ import { ChevronLeft, Search, Plus, Download, Upload, Trash2, UserPlus, X, Chevr
 import { Checkbox } from "@/components/ui/checkbox"
 import { useToast } from "@/components/ui/use-toast"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu"
-
-// Add these imports
-import { ToastProvider } from "@/components/ui/toast"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog"
 import { Switch } from "@/components/ui/switch"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { ChevronDown, ChevronUp } from 'lucide-react'
-import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu"
 
 // Define interfaces
 interface Model {
@@ -95,33 +89,33 @@ export function ChatInterfaceComponent() {
   const { toast } = useToast();
 
   useEffect(() => {
+    const fetchModels = async () => {
+      try {
+        const response = await fetch('https://openrouter.ai/api/v1/models', {
+          headers: {
+            'Authorization': `Bearer ${process.env.NEXT_PUBLIC_OPENROUTER_API_KEY}`,
+          }
+        });
+        if (!response.ok) throw new Error('Failed to fetch models');
+        const data = await response.json();
+        setState(prev => ({ ...prev, models: data.data }));
+      } catch (error) {
+        console.error('Error fetching models:', error);
+        toast({
+          title: "Error",
+          description: "Failed to fetch models. Please try again later.",
+          variant: "destructive",
+        });
+      }
+    };
+
     fetchModels();
     loadFavoriteModels();
-  }, []);
+  }, []); 
 
   useEffect(() => {
     saveFavoriteModels();
   }, [state.favoriteModels]);
-
-  const fetchModels = async () => {
-    try {
-      const response = await fetch('https://openrouter.ai/api/v1/models', {
-        headers: {
-          'Authorization': `Bearer ${process.env.NEXT_PUBLIC_OPENROUTER_API_KEY}`,
-        }
-      });
-      if (!response.ok) throw new Error('Failed to fetch models');
-      const data = await response.json();
-      setState(prev => ({ ...prev, models: data.data }));
-    } catch (error) {
-      console.error('Error fetching models:', error);
-      toast({
-        title: "Error",
-        description: "Failed to fetch models. Please try again later.",
-        variant: "destructive",
-      });
-    }
-  };
 
   const loadFavoriteModels = () => {
     const savedFavorites = localStorage.getItem('favoriteModels');
@@ -254,7 +248,7 @@ export function ChatInterfaceComponent() {
             return { modelId, content: data.choices[0].message.content };
           } catch (error) {
             console.error(`Error with model ${modelId}:`, error);
-            return { modelId, content: `Error: ${error.message}` };
+            return { modelId, content: `Error: ${error instanceof Error ? error.message : 'Unknown error'}` };
           }
         }));
 
