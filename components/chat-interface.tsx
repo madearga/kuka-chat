@@ -317,10 +317,6 @@ export function ChatInterfaceComponent() {
     setState(prev => ({ ...prev, searchTerm: e.target.value }));
   };
 
-  const filteredRooms = state.rooms.filter(room => 
-    room.name.toLowerCase().includes(state.searchTerm.toLowerCase())
-  );
-
   const createNewChat = () => {
     const newRoom: Room = {
       id: Date.now().toString(),
