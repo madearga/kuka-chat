@@ -1,17 +1,17 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { ChevronLeft, Search, Plus, Download, Upload, Trash2, UserPlus, X, ChevronRight, MoreVertical, Star, Settings } from 'lucide-react'
 import { Checkbox } from "@/components/ui/checkbox"
 import { useToast } from "@/components/ui/use-toast"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog"
 import { Switch } from "@/components/ui/switch"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { ChevronLeft, ChevronRight, Plus, Upload, Trash2, X, MoreVertical, Star } from 'lucide-react'
 
 // Define interfaces
 interface Model {
@@ -111,21 +111,21 @@ export function ChatInterfaceComponent() {
 
     fetchModels();
     loadFavoriteModels();
-  }, []); 
+  }, [toast]); // Add 'toast' to the dependency array
+
+  const saveFavoriteModels = useCallback(() => {
+    localStorage.setItem('favoriteModels', JSON.stringify(state.favoriteModels));
+  }, [state.favoriteModels]);
 
   useEffect(() => {
     saveFavoriteModels();
-  }, [state.favoriteModels]);
+  }, [state.favoriteModels, saveFavoriteModels]); // Add 'saveFavoriteModels' to the dependency array
 
   const loadFavoriteModels = () => {
     const savedFavorites = localStorage.getItem('favoriteModels');
     if (savedFavorites) {
       setState(prev => ({ ...prev, favoriteModels: JSON.parse(savedFavorites) }));
     }
-  };
-
-  const saveFavoriteModels = () => {
-    localStorage.setItem('favoriteModels', JSON.stringify(state.favoriteModels));
   };
 
   const addRoom = () => {
